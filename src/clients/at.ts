@@ -1,12 +1,13 @@
 import { BskyAgent, stringifyLex, jsonToLex } from '@atproto/api';
 import * as fs from 'fs';
 import * as util from 'util';
-const GET_TIMEOUT = 15e3; // 15s
-const POST_TIMEOUT = 60e3; // 60s
+import sizeOf from 'buffer-image-size'
+const GET_TIMEOUT = 15e3
+const POST_TIMEOUT = 60e3
 const readFile = util.promisify(fs.readFile);
 async function loadImageData(path: fs.PathLike) {
   let buffer = await readFile(path);
-  return { data: new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength) };
+  return { data: new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength), buffer: buffer };
 }
 interface FetchHandlerResponse {
   status: number;
@@ -69,7 +70,8 @@ async function postImage({ path, text, altText }: PostImageOptions) {
     identifier: process.env.BSKY_IDENTIFIER || 'BSKY_IDENTIFIER missing',
     password: process.env.BSKY_PASSWORD || 'BSKY_PASSWORD missing',
   });
-  const { data } = await loadImageData(path);
+  const { data, buffer } = await loadImageData(path);
+  const dimensions = sizeOf(buffer);
   const testUpload = await agent.uploadBlob(data, { encoding: 'image/jpg' });
   await agent.post({
     text: text,
@@ -78,6 +80,10 @@ async function postImage({ path, text, altText }: PostImageOptions) {
         {
           image: testUpload.data.blob,
           alt: altText,
+          aspectRatio: {
+            width: dimensions.width,
+            height: dimensions.height,
+          },
         },
       ],
       $type: 'app.bsky.embed.images',
