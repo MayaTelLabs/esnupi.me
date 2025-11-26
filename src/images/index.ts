@@ -6,7 +6,7 @@ type RandomImage = {
   imageName: string;
   absolutePath: string;
 };
-async function getRandomImage(): Promise<RandomImage> {
+async function getNextImage(): Promise<RandomImage> {
   const readdir = util.promisify(fs.readdir);
   const imagesDir = path.resolve(__dirname, '../../imagequeue'); 
   let imageFiles: string[];
@@ -29,4 +29,4 @@ async function getRandomImage(): Promise<RandomImage> {
     absolutePath,
   };
 }
-export { getRandomImage };
+export { getNextImage };
