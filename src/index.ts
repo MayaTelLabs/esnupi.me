@@ -23,7 +23,7 @@ function postTextFromImageName(imageName: string): string {
 
 // EDIT THIS!
 function altTextFromImageName(imageName: string): string {
-  return 'Peanuts comic strip from .' + postTextFromImageName(imageName);
+  return 'Peanuts comic strip from .' + (filename);
 }
 
 // Shouldn't have to edit this.
@@ -35,7 +35,7 @@ async function main() {
 
   await postImage({
     path: nextImage.absolutePath,
-    text: postTextFromImageName(nextImage.imageName),
+    text: 'Peanuts: (filename)',
     altText: altTextFromImageName(nextImage.imageName),
   });
 }
