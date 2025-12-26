@@ -1,13 +1,14 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as util from 'util';
-import Holidays from 'date-holidays';
+import * as Holidays from 'date-holidays';
 type RandomImage = {
   imageName: string;
   absolutePath: string;
 };
 async function getNextImage(): Promise<RandomImage> {
   const readdir = util.promisify(fs.readdir);
+  const hd = new (Holidays.default || Holidays)('US')
   const imagesDir = path.resolve(__dirname, '../../imagequeue'); 
   let imageFiles: string[];
   try {
