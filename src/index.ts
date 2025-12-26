@@ -3,8 +3,9 @@ import { getNextImage } from './images';
 import * as dotenv from 'dotenv';
 dotenv.config();
 const CUTOFF_DATE = new Date('1950-10-01T00:00:00');
+const HISTORY_LIMIT = 24;
 function getDateFromFilename(filename: string): Date {
-    const filenameNoJPG = filename.replace(/\.JPG$/i, "");
+    const filenameNoJPG = filename.replace(/\.(JPG|jpeg|png|gif|bmp)$/i, "");
     return new Date(filenameNoJPG + 'T12:00:00'); 
 }
 function formatFullDate(dateObj: Date): string {
@@ -37,8 +38,9 @@ function generateCaption(dateObj: Date): string {
   }
 }
 async function main() {
-  const nextImage = await getNextImage(); 
-  console.log(nextImage.imageName);
+  const rawHistory = process.env.LAST_IMAGE_NAME || "";
+  const historyArray = rawHistory ? rawHistory.split(',') : [];
+  const nextImage = await getNextImage(historyArray); 
   const imageDate = getDateFromFilename(nextImage.imageName); 
   const postText = generateCaption(imageDate);
   const postAltText = generateAltText(imageDate);
@@ -47,5 +49,10 @@ async function main() {
     text: postText,
     altText: postAltText,
   });
+  const updatedHistory = [nextImage.imageName, ...historyArray].slice(0, HISTORY_LIMIT);
+  process.stdout.write(updatedHistory.join(','));
 }
-main();
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
