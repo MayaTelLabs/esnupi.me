@@ -34,7 +34,7 @@ async function getNextImage(): Promise<RandomImage> {
   let validImageFiles = imageFiles.filter((filename) => imageRegex.test(filename));
   if (isThanksgivingToday) {
     const thanksgivingDateStrings: string[] = [];
-    for (let y = 2000; y <= year; y++) {
+    for (let y = 1945; y <= year; y++) {
       const yearlyHolidays = hd.getHolidays(y);
       const tg = yearlyHolidays.find(h => h.name === 'Thanksgiving Day');
       if (tg) {
