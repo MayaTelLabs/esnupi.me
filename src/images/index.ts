@@ -16,19 +16,22 @@ async function getNextImage(): Promise<RandomImage> {
   }
   const imageRegex = /\.(jpg|jpeg|png|gif|bmp)$/i;
   const targetTimeZone = 'America/New_York';
-  const dateParts = new Intl.DateTimeFormat('en-US', {
+  const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: targetTimeZone,
-    month: 'numeric',
-    day: 'numeric'
-  }).formatToParts(new Date());
-  const month = parseInt(dateParts.find(p => p.type === 'month')?.value || '0');
-  const day = parseInt(dateParts.find(p => p.type === 'day')?.value || '0');
-  const isChristmas = (month === 12 && day === 25);
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const parts = formatter.formatToParts(new Date());
+  const month = parts.find(p => p.type === 'month')?.value;
+  const day = parts.find(p => p.type === 'day')?.value;
+  const dateString = `${month}-${day}`;
+  const holidays = ['12-25', '01-01', '10-31'];
+  const isHoliday = holidays.includes(dateString);
   let validImageFiles = imageFiles.filter((filename) => imageRegex.test(filename));
-  if (isChristmas) {
-    const christmasFiles = validImageFiles.filter((filename) => filename.includes('12-25'));
-    if (christmasFiles.length > 0) {
-      validImageFiles = christmasFiles;
+  if (isHoliday) {
+    const holidayFiles = validImageFiles.filter((filename) => filename.includes(dateString));
+    if (holidayFiles.length > 0) {
+      validImageFiles = holidayFiles;
     }
   }
   if (validImageFiles.length === 0) {
