@@ -1,6 +1,3 @@
-# Created by https://www.toptal.com/developers/gitignore/api/node,macos,visualstudiocode,yarn
-# Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,visualstudiocode,yarn
-
 ### macOS ###
 # General
 .DS_Store
@@ -209,5 +206,3 @@ dist
 
 # and uncomment the following lines
 # .pnp.*
-
-# End of https://www.toptal.com/developers/gitignore/api/node,macos,visualstudiocode,yarn
